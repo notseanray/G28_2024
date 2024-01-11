@@ -2,8 +2,11 @@ package com.frc.robot.subsystems;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+
+import java.util.ArrayList;
 
 import com.frc.robot.RobotState;
 import com.frc.robot.drivers.Pigeon;
@@ -251,7 +254,7 @@ public class Swerve extends Subsystem {
     }
 
     public void resetOdometry(Pose2d pose) {
-        swerveOdometry.resetPosition(Constants.SwerveConstants.swerveKinematics, pose.getRotation(), mSwerveMods);
+        swerveOdometry.resetPosition(pose.getRotation(), getPositions(), pose);
         zeroGyro(pose.getRotation().getDegrees());
 
         // reset field to vehicle
@@ -262,6 +265,14 @@ public class Swerve extends Subsystem {
         for (SwerveModule mod : mSwerveMods) {
             mod.resetToAbsolute();
         }
+    }
+    public SwerveModulePosition[] getPositions() {
+        return new SwerveModulePosition[]{
+            mSwerveMods[0].toSwerveModulePosition(),
+            mSwerveMods[1].toSwerveModulePosition(),
+            mSwerveMods[2].toSwerveModulePosition(),
+            mSwerveMods[3].toSwerveModulePosition(),
+        };
     }
 
     public SwerveModuleState[] getStates() {
@@ -307,7 +318,7 @@ public class Swerve extends Subsystem {
     }
 
     public void updateSwerveOdometry(){
-        swerveOdometry.update(mPigeon.getYaw().getWPIRotation2d(), getStates());
+        swerveOdometry.update(mPigeon.getYaw().getWPIRotation2d(), getPositions());
 
         chassisVelocity = Constants.SwerveConstants.swerveKinematics.toChassisSpeeds(
                     mInstance.mSwerveMods[0].getState(),
@@ -322,4 +333,79 @@ public class Swerve extends Subsystem {
         mIsEnabled = false;
     }
     
+    @Override
+    public boolean checkSystem() {
+        return true;
+    }
+
+    // @Override
+    // public void readPeriodicInputs() {
+    //     mPeriodicIO.odometry_pose_x = swerveOdometry.getPoseMeters().getX();
+    //     mPeriodicIO.odometry_pose_y = swerveOdometry.getPoseMeters().getY();
+    //     mPeriodicIO.odometry_pose_rot = swerveOdometry.getPoseMeters().getRotation().getDegrees();
+    //     mPeriodicIO.pigeon_heading = mPigeon.getYaw().getDegrees();
+    //     mPeriodicIO.robot_pitch = mPigeon.getUnadjustedPitch().getDegrees();
+    //     mPeriodicIO.robot_roll = mPigeon.getRoll().getDegrees();
+    //     mPeriodicIO.snap_target = Math.toDegrees(snapPIDController.getGoal().position);
+    //     mPeriodicIO.vision_align_target_angle = Math.toDegrees(mLimelightVisionAlignGoal);
+    //     mPeriodicIO.swerve_heading = MathUtil.inputModulus(mPigeon.getYaw().getDegrees(), 0, 360);
+
+    //     SendLog();
+    // }
+
+    //logger
+    // @Override
+    // public void registerLogger(LoggingSystem LS) {
+        // SetupLog();
+        // LS.register(mStorage, "SWERVE_LOGS.csv");
+    // }
+    
+    public void SetupLog() {
+        // mStorage = new LogStorage<PeriodicIO>();
+
+        // ArrayList<String> headers = new ArrayList<String>();
+        // headers.add("timestamp");
+        // headers.add("is_enabled");
+        // headers.add("odometry_pose_x");
+        // headers.add("odometry_pose_y");
+        // headers.add("odometry_pose_rot");
+        // headers.add("pigeon_heading");
+        // headers.add("robot_pitch");
+        // headers.add("robot_roll");
+        // headers.add("snap_target");
+        // headers.add("vision_align_target_angle");
+        // headers.add("swerve_heading");
+        // for (SwerveModule module : this.mSwerveMods) {
+        //     headers.add(module.moduleNumber + "_angle");
+        //     headers.add(module.moduleNumber + "_desired_angle");
+        //     headers.add(module.moduleNumber + "_velocity");
+        //     headers.add(module.moduleNumber + "_cancoder");
+        // }
+
+        // mStorage.setHeaders(headers);
+    }
+
+    public void SendLog() {
+        // ArrayList<Number> items = new ArrayList<Number>();
+        // items.add(Timer.getFPGATimestamp());
+        // items.add(mIsEnabled ? 1.0 : 0.0);
+        // items.add(mPeriodicIO.odometry_pose_x);
+        // items.add(mPeriodicIO.odometry_pose_y);
+        // items.add(mPeriodicIO.odometry_pose_rot);
+        // items.add(mPeriodicIO.pigeon_heading);
+        // items.add(mPeriodicIO.robot_pitch);
+        // items.add(mPeriodicIO.robot_roll);
+        // items.add(mPeriodicIO.snap_target);
+        // items.add(mPeriodicIO.vision_align_target_angle);
+        // items.add(mPeriodicIO.swerve_heading);
+        // for (SwerveModule module : this.mSwerveMods) {
+        //     items.add(module.getState().angle.getDegrees());
+        //     items.add(module.getTargetAngle());
+        //     items.add(module.getState().speedMetersPerSecond);
+        //     items.add(MathUtil.inputModulus(module.getCanCoder().getDegrees() - module.angleOffset, 0, 360));
+        // }
+
+        // // send data to logging storage
+        // mStorage.addData(items);
+    }
 }

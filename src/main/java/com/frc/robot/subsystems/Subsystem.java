@@ -14,4 +14,8 @@ public abstract class Subsystem {
     public void zeroSensors() {}
 
     public void registerEnabledLoops(ILooper enabledLooper) {}
+
+    public abstract boolean checkSystem();
+
+    public boolean hasEmergency = false;
 }

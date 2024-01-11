@@ -34,7 +34,7 @@ public class SwerveModule {
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.SwerveConstants.driveKS, Constants.SwerveConstants.driveKV, Constants.SwerveConstants.driveKA);
 
     public SwerveModulePosition toSwerveModulePosition() {
-        return new SwerveModulePosition(mDriveMotor.getActiveTrajectoryPosition(),);
+        return new SwerveModulePosition(mDriveMotor.getActiveTrajectoryPosition(), getState().angle);
     }
 
     public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants){
