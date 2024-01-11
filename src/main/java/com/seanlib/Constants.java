@@ -1,9 +1,10 @@
-package seanlib;
+package com.seanlib;
 
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import frc.robot.Ports;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.frc.robot.Ports;
 
 public class Constants {
     // uint
@@ -21,6 +22,7 @@ public class Constants {
 	public static final int kOperatorControllerPort = 1;
 
 	public static final double stickDeadband = 0.15;
+    public static final int kLongCANTimeoutMs = 100;
 
 	public static final class SwerveConstants {
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
@@ -106,7 +108,7 @@ public class Constants {
             public static final double epsilonAngleOffset = 239.06;
             public static final double compAngleOffset = 68.37; 
 
-            public static seanlib.SwerveModuleConstants SwerveModuleConstants() {
+            public static com.seanlib.SwerveModuleConstants SwerveModuleConstants() {
                 return new SwerveModuleConstants(Ports.FL_DRIVE, Ports.FL_ROTATION, Ports.FL_ENCODER,
                         isComp ? compAngleOffset : epsilonAngleOffset);
             }
@@ -142,4 +144,18 @@ public class Constants {
             }
         }
     }    
+    public static final class SnapConstants {
+        public static final double kP = 5.0; 
+        public static final double kI = 0;
+        public static final double kD = 0.0;
+        public static final double kTimeout = 0.25;
+        public static final double kEpsilon = 1.0;
+
+        // Constraints for the profiled angle controller
+        public static final double kMaxAngularSpeedRadiansPerSecond = 2.0 * Math.PI;
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.pow(kMaxAngularSpeedRadiansPerSecond, 2);
+
+        public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
+                new TrapezoidProfile.Constraints(kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    }
 }

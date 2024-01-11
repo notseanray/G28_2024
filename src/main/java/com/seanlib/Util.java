@@ -1,4 +1,4 @@
-package seanlib;
+package com.seanlib;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

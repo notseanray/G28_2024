@@ -1,4 +1,4 @@
-package seanlib;
+package com.seanlib;
 
 public class SwerveModuleConstants {
     public final int driveMotorID;

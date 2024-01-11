@@ -3,13 +3,14 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
+import com.frc.robot.RobotState;
 import com.frc.robot.drivers.Pigeon;
+import com.frc.robot.drivers.SwerveModule;
 import com.seanlib.Constants;
 import com.seanlib.ILooper;
 import com.seanlib.Loop;
-import com.team254.lib.geometry.Rotation2d;
 import com.team254.lib.util.TimeDelayedBoolean;
 
 import edu.wpi.first.math.MathUtil;
@@ -18,7 +19,6 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -82,7 +82,7 @@ public class Swerve extends Subsystem {
     }
 
     public Swerve() {        
-        swerveOdometry = new SwerveDriveOdometry(Constants.SwerveConstants.swerveKinematics, mPigeon.getYaw().getWPIRotation2d());
+        swerveOdometry = new SwerveDriveOdometry(Constants.SwerveConstants.swerveKinematics, mPigeon.getYaw().getWPIRotation2d(), null);
         
         snapPIDController = new ProfiledPIDController(Constants.SnapConstants.kP,
                                                       Constants.SnapConstants.kI, 
@@ -90,11 +90,11 @@ public class Swerve extends Subsystem {
                                                       Constants.SnapConstants.kThetaControllerConstraints);
         snapPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
-        visionPIDController = new PIDController(Constants.VisionAlignConstants.kP,
-                                                        Constants.VisionAlignConstants.kI,
-                                                        Constants.VisionAlignConstants.kD);
-        visionPIDController.enableContinuousInput(-Math.PI, Math.PI);
-        visionPIDController.setTolerance(0.0);
+        // visionPIDController = new PIDController(Constants.VisionAlignConstants.kP,
+        //                                                 Constants.VisionAlignConstants.kI,
+        //                                                 Constants.VisionAlignConstants.kD);
+        // visionPIDController.enableContinuousInput(-Math.PI, Math.PI);
+        // visionPIDController.setTolerance(0.0);
 
         zeroGyro();
 
@@ -117,7 +117,7 @@ public class Swerve extends Subsystem {
             @Override
             public void onLoop(double timestamp) {
                 mIsEnabled = false;
-                chooseVisionAlignGoal();
+                // chooseVisionAlignGoal();
                 updateSwerveOdometry();
             }
 
@@ -125,20 +125,26 @@ public class Swerve extends Subsystem {
             public void onStop(double timestamp) {
                 stop();
             }
+
+            @Override
+            public void deferToNext() {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'deferToNext'");
+            }
         });
     }
     
-    public void setWantAutoVisionAim(boolean aim) {
-        mWantsAutoVisionAim = aim;
-    } 
+    // public void setWantAutoVisionAim(boolean aim) {
+    //     mWantsAutoVisionAim = aim;
+    // } 
 
-    public boolean getWantAutoVisionAim() {
-        return mWantsAutoVisionAim;
-    }
+    // public boolean getWantAutoVisionAim() {
+    //     return mWantsAutoVisionAim;
+    // }
 
-    public void visionAlignDrive(Translation2d translation2d, boolean fieldRelative) {
-        drive(translation2d, mVisionAlignAdjustment, fieldRelative, false);
-    }
+    // public void visionAlignDrive(Translation2d translation2d, boolean fieldRelative) {
+    //     drive(translation2d, mVisionAlignAdjustment, fieldRelative, false);
+    // }
 
     public void angleAlignDrive(Translation2d translation2d, double targetHeading, boolean fieldRelative) {
         snapPIDController.setGoal(new TrapezoidProfile.State(Math.toRadians(targetHeading), 0.0));
@@ -185,22 +191,22 @@ public class Swerve extends Subsystem {
         }
     }
 
-    public void acceptLatestGoalTrackVisionAlignGoal(double vision_goal) {
-        mGoalTrackVisionAlignGoal = vision_goal; 
-    }
+    // public void acceptLatestGoalTrackVisionAlignGoal(double vision_goal) {
+    //     mGoalTrackVisionAlignGoal = vision_goal; 
+    // }
 
-    public void chooseVisionAlignGoal() {
-        double currentAngle = mPigeon.getYaw().getRadians();
-        if (mLimelight.hasTarget()) {
-            double targetOffset = Math.toRadians(mLimelight.getOffset()[0]);
-            mLimelightVisionAlignGoal = MathUtil.inputModulus(currentAngle - targetOffset, 0.0, 2 * Math.PI);
-            visionPIDController.setSetpoint(mLimelightVisionAlignGoal);
-        } else {
-            visionPIDController.setSetpoint(mGoalTrackVisionAlignGoal);
-        }
+    // public void chooseVisionAlignGoal() {
+    //     double currentAngle = mPigeon.getYaw().getRadians();
+    //     if (mLimelight.hasTarget()) {
+    //         double targetOffset = Math.toRadians(mLimelight.getOffset()[0]);
+    //         mLimelightVisionAlignGoal = MathUtil.inputModulus(currentAngle - targetOffset, 0.0, 2 * Math.PI);
+    //         visionPIDController.setSetpoint(mLimelightVisionAlignGoal);
+    //     } else {
+    //         visionPIDController.setSetpoint(mGoalTrackVisionAlignGoal);
+    //     }
 
-        mVisionAlignAdjustment = visionPIDController.calculate(currentAngle);
-    }
+    //     mVisionAlignAdjustment = visionPIDController.calculate(currentAngle);
+    // }
 
     public double calculateSnapValue() {
         return snapPIDController.calculate(mPigeon.getYaw().getRadians());
@@ -245,7 +251,7 @@ public class Swerve extends Subsystem {
     }
 
     public void resetOdometry(Pose2d pose) {
-        swerveOdometry.resetPosition(pose, pose.getRotation());
+        swerveOdometry.resetPosition(Constants.SwerveConstants.swerveKinematics, pose.getRotation(), mSwerveMods);
         zeroGyro(pose.getRotation().getDegrees());
 
         // reset field to vehicle

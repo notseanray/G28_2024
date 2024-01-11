@@ -1,4 +1,4 @@
-package seanlib;
+package com.seanlib;
 
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;

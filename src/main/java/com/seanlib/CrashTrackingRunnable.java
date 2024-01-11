@@ -1,4 +1,4 @@
-package seanlib;
+package com.seanlib;
 
 // CREDIT - FRC Team 1323
 

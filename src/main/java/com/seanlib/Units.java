@@ -1,4 +1,4 @@
-package seanlib;
+package com.seanlib;
 
 public class Units {
     public static double rpm_to_rads_per_sec(double rpm) {

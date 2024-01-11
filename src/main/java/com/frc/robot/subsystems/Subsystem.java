@@ -1,6 +1,6 @@
-package frc.robot.subsystems;
+package com.frc.robot.subsystems;
 
-import seanlib.ILooper;
+import com.seanlib.ILooper;
 
 public abstract class Subsystem {
     public void writeToLog() {}
