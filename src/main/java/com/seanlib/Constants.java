@@ -5,6 +5,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.frc.robot.Ports;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 public class Constants {
     // uint
@@ -85,6 +86,7 @@ public class Constants {
         public static final double maxAngularVelocity = 10.0;
 
         /* Neutral Modes */
+        // TODO replace for the rev stuff
         public static final NeutralMode angleNeutralMode = NeutralMode.Coast;
         public static final NeutralMode driveNeutralMode = NeutralMode.Brake;
 
