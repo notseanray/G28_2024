@@ -1,6 +1,5 @@
 package com.frc.robot.drivers;
 
-
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.frc.robot.Ports;
 import com.seanlib.Constants;
@@ -25,7 +24,7 @@ public class Pigeon {
     private Rotation2d yawAdjustmentAngle = Rotation2d.identity();
     private Rotation2d rollAdjustmentAngle = Rotation2d.identity();
 
-    private Pigeon(int port) {        
+    private Pigeon(int port) {
         mGyro = new Pigeon2(port);
         // TODO reset to default parameters
     }

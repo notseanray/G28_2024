@@ -21,7 +21,8 @@ public class SubsystemManager implements ILooper {
     private List<Subsystem> mAllSubsystems;
     private List<Loop> mLoops = new ArrayList<>();
 
-    private SubsystemManager() {}
+    private SubsystemManager() {
+    }
 
     public static SubsystemManager getInstance() {
         if (mInstance == null) {
@@ -80,7 +81,8 @@ public class SubsystemManager implements ILooper {
 
     private class DisabledLoop implements Loop {
         @Override
-        public void onStart(double timestamp) {}
+        public void onStart(double timestamp) {
+        }
 
         @Override
         public void onLoop(double timestamp) {
@@ -88,7 +90,8 @@ public class SubsystemManager implements ILooper {
         }
 
         @Override
-        public void onStop(double timestamp) {}
+        public void onStop(double timestamp) {
+        }
 
         @Override
         public void deferToNext() {
@@ -103,11 +106,11 @@ public class SubsystemManager implements ILooper {
     }
 
     // public void registerDisabledLoops(Looper disabledLooper) {
-    //     disabledLooper.register(new DisabledLoop());
+    // disabledLooper.register(new DisabledLoop());
     // }
 
     // public void registerLoggingSystems(LoggingSystem LS) {
-    //     mAllSubsystems.forEach(s -> s.registerLogger(LS));
+    // mAllSubsystems.forEach(s -> s.registerLogger(LS));
     // }
 
     @Override

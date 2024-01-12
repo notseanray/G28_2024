@@ -1,6 +1,5 @@
 package com.frc.robot;
 
-
 import com.team254.lib.geometry.Pose2d;
 import com.team254.lib.geometry.Rotation2d;
 import com.team254.lib.geometry.Translation2d;
@@ -20,6 +19,7 @@ import java.util.*;
 
 public class RobotState {
     private static RobotState mInstance;
+
     public static RobotState getInstance() {
         if (mInstance == null) {
             mInstance = new RobotState();
@@ -112,8 +112,9 @@ public class RobotState {
 
     public synchronized Pose2d getPredictedFieldToVehicle(double lookahead_time) {
         return new Pose2d(
-            getLatestFieldToVehicle().getValue()
-                .transformBy(getSmoothedPredictedVelocity().scaled(-lookahead_time)).getTranslation(), new Rotation2d());
+                getLatestFieldToVehicle().getValue()
+                        .transformBy(getSmoothedPredictedVelocity().scaled(-lookahead_time)).getTranslation(),
+                new Rotation2d());
     }
 
     public synchronized void addFieldToVehicleObservation(double timestamp, Pose2d observation) {
@@ -125,8 +126,8 @@ public class RobotState {
 
         distance_driven_ += displacement.getTranslation().norm();
         addFieldToVehicleObservation(timestamp, new Pose2d(
-            getLatestFieldToVehicle().getValue().getTranslation().translateBy(displacement.getTranslation()), 
-            getLatestFieldToVehicle().getValue().getRotation().rotateBy(displacement.getRotation())));
+                getLatestFieldToVehicle().getValue().getTranslation().translateBy(displacement.getTranslation()),
+                getLatestFieldToVehicle().getValue().getRotation().rotateBy(displacement.getRotation())));
 
         vehicle_velocity_measured_ = measured_velocity;
         vehicle_velocity_predicted_ = predicted_velocity;
@@ -162,66 +163,83 @@ public class RobotState {
     }
 
     // public synchronized void resetVision() {
-    //     goal_tracker_.reset();
+    // goal_tracker_.reset();
     // }
 
-//     private Translation2d getCameraToVisionTargetTranslation(TargetInfo target, Limelight source) {
-//         return getCameraToVisionTargetTranslation(target, source.getLensHeight(), source.getHorizontalPlaneToLens());
-//    }
-
-//     public static Translation2d getCameraToVisionTargetTranslation(TargetInfo target, double cameraHeight, Rotation2d cameraPitch) {
-//         return getCameraToVisionTargetTranslation(target, cameraHeight, cameraPitch, Constants.VisionConstants.kGoalHeight);
-//     }
-
-//     private static Translation2d getCameraToVisionTargetTranslation(TargetInfo target, double cameraHeight, Rotation2d cameraPitch, double targetCornerHeight) {
-//         // Compensate for camera pitch
-//         Translation2d xz_plane_translation = new Translation2d(target.getX(), target.getZ()).rotateBy(cameraPitch);
-//         double x = xz_plane_translation.x();
-//         double y = target.getY();
-//         double z = xz_plane_translation.y();
-
-//         // find intersection with the goal
-//         double differential_height = targetCornerHeight - cameraHeight;
-//         if ((z > 0.0) == (differential_height > 0.0)) {
-//             double scaling = differential_height / z;
-//             double distance = Math.hypot(x, y) * scaling;
-//             Rotation2d angle = new Rotation2d(x, y, true);
-//             return new Translation2d(distance * angle.cos() + Constants.VisionConstants.kGoalRadius, distance * angle.sin());
-//         }
-//         return null;
-//     }
-
-    // private void updateGoalTracker(double timestamp, List<Translation2d> cameraToVisionTargetPoses, GoalTracker tracker,
-    //         Limelight source) {
-    //     if (cameraToVisionTargetPoses.size() != 1
-    //             || cameraToVisionTargetPoses.get(0) == null /*
-    //                                                          * || cameraToVisionTargetPoses.get(1) == null
-    //                                                          */)
-    //         return;
-    //     Pose2d cameraToVisionTarget = Pose2d.fromTranslation(cameraToVisionTargetPoses.get(0));
-
-    //     SmartDashboard.putString("camera to vision target", cameraToVisionTarget.toString());
-
-    //     Pose2d fieldToVisionTarget = getFieldToVehicle(timestamp).transformBy(cameraToVisionTarget.inverse());
-
-    //     SmartDashboard.putString("field to vision target", fieldToVisionTarget.toString());
-
-    //     tracker.update(timestamp, List.of(new Pose2d(fieldToVisionTarget.getTranslation(), Rotation2d.identity())));
+    // private Translation2d getCameraToVisionTargetTranslation(TargetInfo target,
+    // Limelight source) {
+    // return getCameraToVisionTargetTranslation(target, source.getLensHeight(),
+    // source.getHorizontalPlaneToLens());
     // }
 
-    // public synchronized void addVisionUpdate(double timestamp, List<TargetInfo> observations, Limelight source) {
-    //     List<Translation2d> cameraToVisionTargetTranslations = new ArrayList<>();
+    // public static Translation2d getCameraToVisionTargetTranslation(TargetInfo
+    // target, double cameraHeight, Rotation2d cameraPitch) {
+    // return getCameraToVisionTargetTranslation(target, cameraHeight, cameraPitch,
+    // Constants.VisionConstants.kGoalHeight);
+    // }
 
-    //     if (observations == null || observations.isEmpty()) {
-    //         goal_tracker_.maybePruneTracks();
-    //         return;
-    //     }
+    // private static Translation2d getCameraToVisionTargetTranslation(TargetInfo
+    // target, double cameraHeight, Rotation2d cameraPitch, double
+    // targetCornerHeight) {
+    // // Compensate for camera pitch
+    // Translation2d xz_plane_translation = new Translation2d(target.getX(),
+    // target.getZ()).rotateBy(cameraPitch);
+    // double x = xz_plane_translation.x();
+    // double y = target.getY();
+    // double z = xz_plane_translation.y();
 
-    //     for (TargetInfo target : observations) {
-    //         cameraToVisionTargetTranslations.add(getCameraToVisionTargetTranslation(target, source));
-    //     }
+    // // find intersection with the goal
+    // double differential_height = targetCornerHeight - cameraHeight;
+    // if ((z > 0.0) == (differential_height > 0.0)) {
+    // double scaling = differential_height / z;
+    // double distance = Math.hypot(x, y) * scaling;
+    // Rotation2d angle = new Rotation2d(x, y, true);
+    // return new Translation2d(distance * angle.cos() +
+    // Constants.VisionConstants.kGoalRadius, distance * angle.sin());
+    // }
+    // return null;
+    // }
 
-    //     updateGoalTracker(timestamp, cameraToVisionTargetTranslations, goal_tracker_, source);
+    // private void updateGoalTracker(double timestamp, List<Translation2d>
+    // cameraToVisionTargetPoses, GoalTracker tracker,
+    // Limelight source) {
+    // if (cameraToVisionTargetPoses.size() != 1
+    // || cameraToVisionTargetPoses.get(0) == null /*
+    // * || cameraToVisionTargetPoses.get(1) == null
+    // */)
+    // return;
+    // Pose2d cameraToVisionTarget =
+    // Pose2d.fromTranslation(cameraToVisionTargetPoses.get(0));
+
+    // SmartDashboard.putString("camera to vision target",
+    // cameraToVisionTarget.toString());
+
+    // Pose2d fieldToVisionTarget =
+    // getFieldToVehicle(timestamp).transformBy(cameraToVisionTarget.inverse());
+
+    // SmartDashboard.putString("field to vision target",
+    // fieldToVisionTarget.toString());
+
+    // tracker.update(timestamp, List.of(new
+    // Pose2d(fieldToVisionTarget.getTranslation(), Rotation2d.identity())));
+    // }
+
+    // public synchronized void addVisionUpdate(double timestamp, List<TargetInfo>
+    // observations, Limelight source) {
+    // List<Translation2d> cameraToVisionTargetTranslations = new ArrayList<>();
+
+    // if (observations == null || observations.isEmpty()) {
+    // goal_tracker_.maybePruneTracks();
+    // return;
+    // }
+
+    // for (TargetInfo target : observations) {
+    // cameraToVisionTargetTranslations.add(getCameraToVisionTargetTranslation(target,
+    // source));
+    // }
+
+    // updateGoalTracker(timestamp, cameraToVisionTargetTranslations, goal_tracker_,
+    // source);
     // }
 
     // use known field target orientations to compensate for inaccuracy, assumes
@@ -230,85 +248,100 @@ public class RobotState {
     private final double[] kPossibleTargetNormals = { 0.0, 90.0, 180.0, 270.0 };
 
     // public synchronized Pose2d getFieldToVisionTarget() {
-    //     GoalTracker tracker = goal_tracker_;
+    // GoalTracker tracker = goal_tracker_;
 
-    //     if (!tracker.hasTracks()) {
-    //         return null;
-    //     }
+    // if (!tracker.hasTracks()) {
+    // return null;
+    // }
 
-    //     Pose2d fieldToTarget = tracker.getTracks().get(0).field_to_target;
+    // Pose2d fieldToTarget = tracker.getTracks().get(0).field_to_target;
 
-    //     double normalPositive = (fieldToTarget.getRotation().getDegrees() + 360) % 360;
-    //     double normalClamped = kPossibleTargetNormals[0];
-    //     for (double possible : kPossibleTargetNormals) {
-    //         if (Math.abs(normalPositive - possible) < Math.abs(normalPositive - normalClamped)) {
-    //             normalClamped = possible;
-    //         }
-    //     }
+    // double normalPositive = (fieldToTarget.getRotation().getDegrees() + 360) %
+    // 360;
+    // double normalClamped = kPossibleTargetNormals[0];
+    // for (double possible : kPossibleTargetNormals) {
+    // if (Math.abs(normalPositive - possible) < Math.abs(normalPositive -
+    // normalClamped)) {
+    // normalClamped = possible;
+    // }
+    // }
 
-    //     return new Pose2d(fieldToTarget.getTranslation(), Rotation2d.fromDegrees(normalClamped));
+    // return new Pose2d(fieldToTarget.getTranslation(),
+    // Rotation2d.fromDegrees(normalClamped));
     // }
 
     // public synchronized Pose2d getVehicleToVisionTarget(double timestamp) {
-    //     Pose2d fieldToVisionTarget = getFieldToVisionTarget();
+    // Pose2d fieldToVisionTarget = getFieldToVisionTarget();
 
-    //     if (fieldToVisionTarget == null) {
-    //         return null;
-    //     }
+    // if (fieldToVisionTarget == null) {
+    // return null;
+    // }
 
-    //     return getFieldToVehicle(timestamp).inverse().transformBy(fieldToVisionTarget);
+    // return
+    // getFieldToVehicle(timestamp).inverse().transformBy(fieldToVisionTarget);
     // }
 
     // public synchronized Optional<AimingParameters> getDefaultAimingParameters() {
-    //     double timestamp = Timer.getFPGATimestamp();
+    // double timestamp = Timer.getFPGATimestamp();
 
-    //     Pose2d vehicleToGoal = getFieldToVehicle(timestamp).inverse().transformBy(kDefaultFieldRelativeGoalLocation);
-    //     vehicleToGoal = new Pose2d(vehicleToGoal.getTranslation().rotateBy(getFieldToVehicle(timestamp).getRotation()), vehicleToGoal.getRotation());
+    // Pose2d vehicleToGoal =
+    // getFieldToVehicle(timestamp).inverse().transformBy(kDefaultFieldRelativeGoalLocation);
+    // vehicleToGoal = new
+    // Pose2d(vehicleToGoal.getTranslation().rotateBy(getFieldToVehicle(timestamp).getRotation()),
+    // vehicleToGoal.getRotation());
 
-    //     AimingParameters params = new AimingParameters(vehicleToGoal, kDefaultFieldRelativeGoalLocation,
-    //             kDefaultFieldRelativeGoalLocation.getRotation(), 0, 0, -1);
+    // AimingParameters params = new AimingParameters(vehicleToGoal,
+    // kDefaultFieldRelativeGoalLocation,
+    // kDefaultFieldRelativeGoalLocation.getRotation(), 0, 0, -1);
 
-    //     return Optional.of(params);
+    // return Optional.of(params);
     // }
 
-    // public synchronized Optional<AimingParameters> getAimingParameters(int prev_track_id, double max_track_age) {
-    //     GoalTracker tracker = goal_tracker_;
-    //     List<GoalTracker.TrackReport> reports = tracker.getTracks();
+    // public synchronized Optional<AimingParameters> getAimingParameters(int
+    // prev_track_id, double max_track_age) {
+    // GoalTracker tracker = goal_tracker_;
+    // List<GoalTracker.TrackReport> reports = tracker.getTracks();
 
-    //     if (reports.isEmpty()) {
-    //         return Optional.empty();
-    //     }
+    // if (reports.isEmpty()) {
+    // return Optional.empty();
+    // }
 
-    //     double timestamp = Timer.getFPGATimestamp();
+    // double timestamp = Timer.getFPGATimestamp();
 
-    //     // Find the best track.
-    //     TrackReportComparator comparator = new TrackReportComparator(
-    //             Constants.VisionConstants.kTrackStabilityWeight,
-    //             Constants.VisionConstants.kTrackAgeWeight,
-    //             Constants.VisionConstants.kTrackSwitchingWeight,
-    //             prev_track_id,
-    //             timestamp);
-                
-    //     reports.sort(comparator);
+    // // Find the best track.
+    // TrackReportComparator comparator = new TrackReportComparator(
+    // Constants.VisionConstants.kTrackStabilityWeight,
+    // Constants.VisionConstants.kTrackAgeWeight,
+    // Constants.VisionConstants.kTrackSwitchingWeight,
+    // prev_track_id,
+    // timestamp);
 
-    //     GoalTracker.TrackReport report = null;
-    //     for (GoalTracker.TrackReport track : reports) {
-    //         if (track.latest_timestamp > timestamp - max_track_age) {
-    //             report = track;
-    //             break;
-    //         }
-    //     }
-    //     if (report == null) {
-    //         return Optional.empty();
-    //     }
+    // reports.sort(comparator);
 
-    //     Pose2d vehicleToGoal = getFieldToVehicle(timestamp).inverse().transformBy(report.field_to_target);
-    //     vehicleToGoal = new Pose2d(vehicleToGoal.getTranslation().rotateBy(getFieldToVehicle(timestamp).getRotation()), vehicleToGoal.getRotation());
+    // GoalTracker.TrackReport report = null;
+    // for (GoalTracker.TrackReport track : reports) {
+    // if (track.latest_timestamp > timestamp - max_track_age) {
+    // report = track;
+    // break;
+    // }
+    // }
+    // if (report == null) {
+    // return Optional.empty();
+    // }
 
-    //     AimingParameters params = new AimingParameters(vehicleToGoal, report.field_to_target,
-    //             report.field_to_target.getRotation(), report.latest_timestamp, report.stability, report.id);
-    //     SmartDashboard.putString("Field to Target", report.field_to_target.toString());
-    //     return Optional.of(params);
+    // Pose2d vehicleToGoal =
+    // getFieldToVehicle(timestamp).inverse().transformBy(report.field_to_target);
+    // vehicleToGoal = new
+    // Pose2d(vehicleToGoal.getTranslation().rotateBy(getFieldToVehicle(timestamp).getRotation()),
+    // vehicleToGoal.getRotation());
+
+    // AimingParameters params = new AimingParameters(vehicleToGoal,
+    // report.field_to_target,
+    // report.field_to_target.getRotation(), report.latest_timestamp,
+    // report.stability, report.id);
+    // SmartDashboard.putString("Field to Target",
+    // report.field_to_target.toString());
+    // return Optional.of(params);
     // }
 
     public Pose2d getRobot() {
@@ -324,14 +357,18 @@ public class RobotState {
         SmartDashboard.putString("Robot Field to Vehicle", getLatestFieldToVehicle().getValue().toString());
         SmartDashboard.putNumber("Robot Field To Vehicle X", getLatestFieldToVehicle().getValue().getTranslation().x());
         SmartDashboard.putNumber("Robot Field To Vehicle Y", getLatestFieldToVehicle().getValue().getTranslation().y());
-        SmartDashboard.putNumber("Robot Field To Vehicle Theta", getLatestFieldToVehicle().getValue().getRotation().getDegrees());
+        SmartDashboard.putNumber("Robot Field To Vehicle Theta",
+                getLatestFieldToVehicle().getValue().getRotation().getDegrees());
         SmartDashboard.putString("Smoothed Predicted Velocity", getSmoothedPredictedVelocity().toString());
 
-        // Optional<AimingParameters> params = getAimingParameters(-1, Constants.VisionConstants.kMaxGoalTrackAge);
+        // Optional<AimingParameters> params = getAimingParameters(-1,
+        // Constants.VisionConstants.kMaxGoalTrackAge);
         // SmartDashboard.putBoolean("Has Aiming Parameters", params.isPresent());
         // if (params.isPresent()) {
-        //     SmartDashboard.putString("Vehicle to Target", params.get().getVehicleToGoal().toString());
-        //     SmartDashboard.putNumber("Vehicle to Target Angle", params.get().getVehicleToGoalRotation().getDegrees());
+        // SmartDashboard.putString("Vehicle to Target",
+        // params.get().getVehicleToGoal().toString());
+        // SmartDashboard.putNumber("Vehicle to Target Angle",
+        // params.get().getVehicleToGoalRotation().getDegrees());
         // }
     }
 }
