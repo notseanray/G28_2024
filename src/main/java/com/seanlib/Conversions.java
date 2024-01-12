@@ -44,6 +44,17 @@ public class Conversions {
     }
 
     /**
+     * @param RPM RPM of mechanism
+     * @param gearRatio Gear Ratio between Falcon and Mechanism (set to 1 for Falcon RPM)
+     * @return RPM of Mechanism
+     */
+    public static double RPMToNeo(double RPM, double gearRatio) {
+        double motorRPM = RPM * gearRatio;
+        double sensorCounts = motorRPM * (2048.0 / 600.0);
+        return sensorCounts;
+    }
+
+    /**
      * @param velocitycounts Falcon Velocity Counts
      * @param circumference Circumference of Wheel
      * @param gearRatio Gear Ratio between Falcon and Mechanism (set to 1 for Falcon RPM)
@@ -51,6 +62,18 @@ public class Conversions {
      */
     public static double falconToMPS(double velocitycounts, double circumference, double gearRatio){
         double wheelRPM = falconToRPM(velocitycounts, gearRatio);
+        double wheelMPS = (wheelRPM * circumference) / 60;
+        return wheelMPS;
+    }
+
+    /**
+     * @param velocitycounts Neo Velocity Counts
+     * @param circumference Circumference of Wheel
+     * @param gearRatio Gear Ratio between Neo and Mechanism (set to 1 for Neo RPM)
+     * @return Neo Velocity Counts
+     */
+    public static double neoToMPS(double velocitycounts, double circumference, double gearRatio){
+        double wheelRPM = neoToRPM(velocitycounts, gearRatio);
         double wheelMPS = (wheelRPM * circumference) / 60;
         return wheelMPS;
     }
