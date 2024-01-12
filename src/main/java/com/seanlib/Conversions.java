@@ -12,6 +12,15 @@ public class Conversions {
     }
 
     /**
+     * @param counts Neo Counts
+     * @param gearRatio Gear Ratio between Neo and Mechanism
+     * @return Degrees of Rotation of Mechanism
+     */
+    public static double neoToDegrees(double counts, double gearRatio) {
+        return counts * (360.0 / (gearRatio * 42.0));
+    }
+
+    /**
      * @param degrees Degrees of rotation of Mechanism
      * @param gearRatio Gear Ratio between Falcon and Mechanism
      * @return Falcon Counts
@@ -22,12 +31,33 @@ public class Conversions {
     }
 
     /**
+     * @param degrees Degrees of rotation of Mechanism
+     * @param gearRatio Gear Ratio between Neo and Mechanism
+     * @return Neo Counts
+     */
+    public static double degreesToNeo(double degrees, double gearRatio) {
+        double ticks =  degrees / (360.0 / (gearRatio * 42.0));
+        return ticks;
+    }
+
+    /**
      * @param velocityCounts Falcon Velocity Counts
      * @param gearRatio Gear Ratio between Falcon and Mechanism (set to 1 for Falcon RPM)
      * @return RPM of Mechanism
      */
     public static double falconToRPM(double velocityCounts, double gearRatio) {
         double motorRPM = velocityCounts * (600.0 / 2048.0);        
+        double mechRPM = motorRPM / gearRatio;
+        return mechRPM;
+    }
+
+    /**
+     * @param velocityCounts Neo Velocity Counts
+     * @param gearRatio Gear Ratio between Neo and Mechanism (set to 1 for Neo RPM)
+     * @return RPM of Mechanism
+     */
+    public static double neoToRPM(double velocityCounts, double gearRatio) {
+        double motorRPM = velocityCounts * (600.0 / 42.0);        
         double mechRPM = motorRPM / gearRatio;
         return mechRPM;
     }
@@ -45,12 +75,12 @@ public class Conversions {
 
     /**
      * @param RPM RPM of mechanism
-     * @param gearRatio Gear Ratio between Falcon and Mechanism (set to 1 for Falcon RPM)
+     * @param gearRatio Gear Ratio between Neo and Mechanism (set to 1 for Neo RPM)
      * @return RPM of Mechanism
      */
     public static double RPMToNeo(double RPM, double gearRatio) {
         double motorRPM = RPM * gearRatio;
-        double sensorCounts = motorRPM * (2048.0 / 600.0);
+        double sensorCounts = motorRPM * (42.0 / 600.0);
         return sensorCounts;
     }
 

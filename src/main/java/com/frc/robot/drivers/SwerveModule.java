@@ -104,11 +104,13 @@ public class SwerveModule {
         lastAngle = angle;
     }
 
+    // TODO
     public void resetToAbsolute(){
         // double absolutePosition = Conversions.degreesToFalcon(getCanCoder().getDegrees() - angleOffset, Constants.SwerveConstants.angleGearRatio);
         // mAngleMotor.get(absolutePosition);
     }
 
+    // TODO
     private void configAngleEncoder(){        
         // USE THIS FOR TALON
         // angleEncoder.configFactoryDefault();
