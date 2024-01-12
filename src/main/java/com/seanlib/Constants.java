@@ -88,7 +88,9 @@ public class Constants {
         /* Neutral Modes */
         // TODO replace for the rev stuff
         public static final NeutralMode angleNeutralMode = NeutralMode.Coast;
+        public static final IdleMode angleNeutralModeREV = IdleMode.kCoast;
         public static final NeutralMode driveNeutralMode = NeutralMode.Brake;
+        public static final IdleMode driveNeutralModeREV = IdleMode.kBrake;
 
         /* Motor Inverts */
         public static final boolean driveMotorInvert = false;

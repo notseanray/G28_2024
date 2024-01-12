@@ -120,6 +120,18 @@ public class Conversions {
         return wheelVelocity;
     }
 
+    /**
+     * @param velocity Velocity MPS
+     * @param circumference Circumference of Wheel
+     * @param gearRatio Gear Ratio between Falcon and Mechanism (set to 1 for Falcon RPM)
+     * @return Falcon Velocity Counts
+     */
+    public static double MPSToNeo(double velocity, double circumference, double gearRatio){
+        double wheelRPM = ((velocity * 60) / circumference);
+        double wheelVelocity = RPMToNeo(wheelRPM, gearRatio);
+        return wheelVelocity;
+    }
+
     // Convert meters to inches
     public static double metersToInches(double meters) {
         return meters * (39.73701 / 1);

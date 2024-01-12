@@ -13,6 +13,7 @@ import com.seanlib.Conversions;
 import com.seanlib.REVConfigs;
 import com.team254.lib.drivers.TalonFXFactory;
 
+import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -24,8 +25,10 @@ import com.ctre.phoenix.sensors.CANCoderStatusFrame;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.SparkFlexExternalEncoder;
+import com.revrobotics.SparkPIDController;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 public class SwerveModule {
@@ -33,6 +36,8 @@ public class SwerveModule {
     public double angleOffset;
     private CANSparkMax mAngleMotor;
     private CANSparkMax mDriveMotor;
+    public SparkPIDController mDrivePID = mDriveMotor.getPIDController();
+    public SparkPIDController mRotatePID = mAngleMotor.getPIDController();
     // private TalonFX mDriveMotor;
     private AbsoluteEncoder angleEncoder;
     private double lastAngle;
@@ -40,6 +45,15 @@ public class SwerveModule {
     private double anglekP;
     private double anglekI;
     private double anglekD;
+
+    // *TODO configure in constants.java *//
+    private double mDrivekP;
+    private double mDrivekI;
+    private double mDrivekD;
+    private double mDrivekIz;
+    private double mDrivekFF;
+    private double mDrivekMaxOutput;
+    private double mDrivekMinOutput;
 
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.SwerveConstants.driveKS, Constants.SwerveConstants.driveKV, Constants.SwerveConstants.driveKA);
 
@@ -53,6 +67,8 @@ public class SwerveModule {
         this.moduleNumber = moduleNumber;
         angleOffset = moduleConstants.angleOffset;
         
+        /* Angle Motor Config */
+        mAngleMotor = REVConfigs.configureCANSparkMax(moduleConstants.angleMotorID);
         // TODO if cancoder is -1
         /* Angle Encoder Config */
         if (moduleConstants.cancoderID < 0) {
@@ -64,14 +80,11 @@ public class SwerveModule {
         configAngleEncoder();
         // angleEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 255);
         // angleEncoder.setStatusFramePeriod(CANCoderStatusFrame.VbatAndFaults, 255);
-
-        /* Angle Motor Config */
-        mAngleMotor = REVConfigs.configureCANSparkMax(moduleConstants.angleMotorID);
         configAngleMotor();
-        TalonFXConfiguration angleConfiguration = CTREConfigs.swerveAngleFXConfig();
-        anglekP = angleConfiguration.slot0.kP;
-        anglekI = angleConfiguration.slot0.kI;
-        anglekD = angleConfiguration.slot0.kD;
+        // TalonFXConfiguration angleConfiguration = CTREConfigs.swerveAngleFXConfig();
+        // anglekP = angleConfiguration.slot0.kP;
+        // anglekI = angleConfiguration.slot0.kI;
+        // anglekD = angleConfiguration.slot0.kD;
 
         /* Drive Motor Config */
         // mDriveMotor = TalonFXFactory.createDefaultTalon(moduleConstants.driveMotorID);
@@ -92,11 +105,25 @@ public class SwerveModule {
             mDriveMotor.set(percentOutput);
         }
         else {
-            // TODO need to figure out what to do for this
-            // TODO PID CONTROLLER
             // double velocity = Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, Constants.SwerveConstants.wheelCircumference, Constants.SwerveConstants.driveGearRatio);
             // mDriveMotor.set(ControlMode.Velocity, velocity, DemandType.ArbitraryFeedForward, feedforward.calculate(desiredState.speedMetersPerSecond));
-
+            // TODO need to test this crap
+            double velocity = Conversions.MPSToNeo(desiredState.speedMetersPerSecond, Constants.SwerveConstants.wheelCircumference, Constants.SwerveConstants.driveGearRatio);
+            mDrivekP = 0.008; 
+            mDrivekI = 0;
+            mDrivekD = 0; 
+            mDrivekIz = 0; 
+            mDrivekFF = 0; 
+            /* TODO currently unused, might not be needed for drivebase */
+            mDrivekMaxOutput = 0.4; 
+            mDrivekMinOutput = -0.4;
+            mDrivePID.setP(mDrivekP);
+            mDrivePID.setI(mDrivekI);
+            mDrivePID.setD(mDrivekD);
+            mDrivePID.setIZone(mDrivekIz);
+            mDrivePID.setFF(mDrivekFF);
+            mDrivePID.setReference(velocity, ControlType.kVelocity);
+            mDriveMotor.set(velocity);
         }
 
         double angle = (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.SwerveConstants.maxSpeed * 0.01)) ? lastAngle : desiredState.angle.getDegrees(); //Prevent rotating module if speed is less then 1%. Prevents Jittering.
@@ -122,7 +149,7 @@ public class SwerveModule {
         // TODO angle config
         // mAngleMotor.configAllSettings(CTREConfigs.swerveAngleFXConfig());
         mAngleMotor.setInverted(Constants.SwerveConstants.angleMotorInvert);
-        mAngleMotor.setIdleMode(IdleMode.kCoast);
+        mAngleMotor.setIdleMode(Constants.SwerveConstants.angleNeutralModeREV);
         resetToAbsolute();
     }
 
@@ -134,6 +161,7 @@ public class SwerveModule {
         // mDriveMotor.setNeutralMode(Constants.SwerveConstants.driveNeutralMode);
         // mDriveMotor.setSelectedSensorPosition(0);
 
+        mDriveMotor.setIdleMode(Constants.SwerveConstants.driveNeutralModeREV);
         mDriveMotor.setInverted(Constants.SwerveConstants.driveMotorInvert);
     }
 
