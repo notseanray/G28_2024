@@ -2,9 +2,9 @@ package com.frc.robot.drivers;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+// import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.ctre.phoenix.sensors.CANCoder;
+// import com.ctre.phoenix.sensors.CANCoder;
 import com.seanlib.CTREConfigs;
 import com.seanlib.CTREModuleState;
 import com.seanlib.SwerveModuleConstants;
@@ -20,8 +20,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.CAN;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.ctre.phoenix.sensors.CANCoderStatusFrame;
+// import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
+// import com.ctre.phoenix.sensors.CANCoderStatusFrame;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
